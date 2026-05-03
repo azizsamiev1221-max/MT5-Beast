@@ -1,22 +1,9 @@
-# Используем стабильную версию Ubuntu
-FROM ubuntu:22.04
+FROM ghcr.io/mql5-docker/mt5-terminal:latest
 
-# Отключаем интерактивные диалоги при установке
-ENV DEBIAN_FRONTEND=noninteractive
+# Устанавливаем пароль для доступа к рабочему столу сервера
+ENV VNC_PASSWORD=your_password_here
 
-# Устанавливаем Wine и необходимые зависимости
-RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg2 \
-    software-properties-common \
-    wine \
-    && apt-get clean
+# Копируем твой файл советника в папку MT5
+COPY "MT5_Beast_Micro_v8(1).mq5" /root/.wine/drive_c/Program\ Files/MetaTrader\ 5/MQL5/Experts/
 
-# Создаем рабочую папку
-WORKDIR /app
-
-# Копируем твой файл советника в контейнер
-COPY "MT5_Beast_Micro_v8(1).mq5" /app/
-
-# Заглушка, чтобы сервер не выключался (tail -f будет работать вечно)
-CMD ["tail", "-f", "/dev/null"]
+EXPOSE 8080
