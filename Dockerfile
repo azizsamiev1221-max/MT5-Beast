@@ -1,7 +1,15 @@
-FROM ghcr.io/alloveras/mt5-terminal:latest
+# Используем проверенный образ с предустановленным Wine
+FROM ubuntu:20.04
 
-# Копируем твой советник в папку экспертов терминала
-COPY "MT5_Beast_Micro_v8(1).mq5" /root/.wine/drive_c/Program\ Files/MetaTrader\ 5/MQL5/Experts/
+# Установка необходимых компонентов
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y wget gnupg2 software-properties-common winehq-stable || true
 
-# Настройка для работы без монитора
-ENV DISPLAY=:0
+# Создаем рабочую директорию
+WORKDIR /app
+
+# Копируем твой файл советника
+COPY "MT5_Beast_Micro_v8(1).mq5" /app/
+
+# Команда, чтобы контейнер не выключался сразу
+CMD ["tail", "-f", "/dev/null"]
