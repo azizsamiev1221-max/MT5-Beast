@@ -1,15 +1,22 @@
-# Используем проверенный образ с предустановленным Wine
-FROM ubuntu:20.04
+# Используем стабильную версию Ubuntu
+FROM ubuntu:22.04
 
-# Установка необходимых компонентов
+# Отключаем интерактивные диалоги при установке
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y wget gnupg2 software-properties-common winehq-stable || true
 
-# Создаем рабочую директорию
+# Устанавливаем Wine и необходимые зависимости
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg2 \
+    software-properties-common \
+    wine \
+    && apt-get clean
+
+# Создаем рабочую папку
 WORKDIR /app
 
-# Копируем твой файл советника
+# Копируем твой файл советника в контейнер
 COPY "MT5_Beast_Micro_v8(1).mq5" /app/
 
-# Команда, чтобы контейнер не выключался сразу
+# Заглушка, чтобы сервер не выключался (tail -f будет работать вечно)
 CMD ["tail", "-f", "/dev/null"]
